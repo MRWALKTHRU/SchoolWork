@@ -1,3 +1,4 @@
+
 """
 Name: Jules Gravestock
 Assignment: Model of the integrate-and-fire neuron
@@ -13,13 +14,15 @@ Program Instructions:
 """
 import numpy as np
 import matplotlib.pyplot as p
-# Define all the relevant variables
-initv = 0
+# Values
+initv = -70e-33
 initi = 0
-initdv = 1
-vthresh = 3
-maxv= 11
-c = 1
+maxi = 8.495e-3
+initdv = 0
+vthresh = -55e-3
+maxv= 40e-3
+# properties
+c = 0.5
 r = 1
 tau = r * c
 ts = 0.05
@@ -29,38 +32,31 @@ epochs = list(range(100))
 # Implement relevant equations
 
 def m_dvdt(i, v):
-    return (-v + r * i) /tau
+    return (-v + r * i)//tau
 
 
 def m_v(dvdt, v, dt):
     return v + dvdt * dt
 
-
-def m_i(v, dvdt):
-    return v / r + c * dvdt
-
-
 voltage = [initv]
 time = [0]
 current = [initi]
-i = initi
-dvdt = initdv
 count = 100
 
 
 
 for _ in epochs:
-    i = 10 if 3 >= time[_] >= 0.25 else 0 # Tells the current to be on for a short period
+    i = maxi if 3 >= time[_] >= 0.25 else 0 # Tells the current to be on for a short period
     # Factor in refractory period
     if count <= 5:
         dvdt = m_dvdt(i/1000, voltage[-1])
     elif count <= 15:
         dvdt = m_dvdt(i/5, voltage[-1])
     else:
-        dvdt = dvdt = m_dvdt(i, voltage[-1])
-        print(dvdt)
+        dvdt = m_dvdt(i, voltage[-1])
+    print(dvdt)
 
-    newvoltage = (m_v(dvdt, voltage[-1], ts)) # compute next voltage
+    newvoltage = (m_v(dvdt, voltage[-1], ts))
 
     # Code the voltage spike when threshold is exceeded
     if voltage[_] >= vthresh and voltage[-1] != maxv:
@@ -84,4 +80,3 @@ p.title("The Leaky Integrate-And-Fire Model of Neuron")
 p.legend(['Voltage', 'Current'], loc='upper right')
 
 p.show()
-
